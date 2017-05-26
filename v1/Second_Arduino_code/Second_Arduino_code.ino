@@ -32,9 +32,9 @@ void setup() {
 void loop() {
 	
 	while (timesToMove > 0){
-		_moveStepperToPositionNow(stepper1, 4000);	
+		_moveStepperToPositionNow(stepper1, 4096);	
 		delay(500);
-		_moveStepperToPositionNow(stepper1, -2000);
+		_moveStepperToPositionNow(stepper1, -2048);
 		timesToMove = timesToMove - 1;
 	}
 }
