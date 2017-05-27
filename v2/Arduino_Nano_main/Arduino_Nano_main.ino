@@ -14,7 +14,9 @@
 AccelStepper stepper1(HALFSTEP, motorPin1, motorPin3, motorPin2, motorPin4);
 //Servo myservo; // create servo object to control servo
 
-int timesToMove = 3;	// How many times to complete rotation sequence
+int timesToMove = 3;			// How many times to complete rotation sequence, for testing purposes
+int stepsPerRotation = 4076;	// Number of steps there are in half-step mode for the stepper motor; 4076 is the approximate number for the 28byj-48 Stepper Motor
+float storedError = 0;			// Needed for Stepper motor, _incrementAngle function, to improve accuracy
 
 void setup() {
 	Serial.begin(115200); // This is for ease of debugging; starts the Serial Monitor (no effect on the functionality of your code; only helps you see what it's doing)
@@ -32,10 +34,17 @@ void setup() {
 
 void loop() {
 	
-	while (timesToMove > 0){
-		_moveStepperToPositionNow(stepper1, 4076);	
+	//while (timesToMove > 0){
+		//_moveStepsNow(stepper1, 4076);	
+		
+		_incrementAngleNow(stepper1, 71);	// Moves the stepper motor clockwise 71 degrees
 		delay(500);
-		_moveStepperToPositionNow(stepper1, -2038);
-		timesToMove = timesToMove - 1;
-	}
+		_incrementAngleNow(stepper1, 43);	// Moves the stepper motor clockwise 43 degrees
+		delay(500);
+		_incrementAngleNow(stepper1, -278);	// Moves the stepper motor counterclockwise 278 degees
+		
+		delay(500);
+		//_moveStepsNow(stepper1, -2038);
+		//timesToMove = timesToMove - 1;
+	//}
 }
