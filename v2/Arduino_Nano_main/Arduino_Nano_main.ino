@@ -1,10 +1,10 @@
-//
-// ---The following code is needed for the stepper motor---
-//
 #include <AccelStepper.h>
+//#include <Servo.h> // add the servo library, so we can use pre-made functions to control it
+
+// For AccelStepper
 #define HALFSTEP 8
 
-// Motor pin definitions
+// Stepper Motor pin definitions
 #define motorPin1  3     // IN1 on the ULN2003 driver 1
 #define motorPin2  4     // IN2 on the ULN2003 driver 1
 #define motorPin3  5     // IN3 on the ULN2003 driver 1
@@ -12,15 +12,16 @@
 
 // Initialize with pin sequence IN1-IN3-IN2-IN4 for using the AccelStepper with 28BYJ-48
 AccelStepper stepper1(HALFSTEP, motorPin1, motorPin3, motorPin2, motorPin4);
-//
-// ---End of variables needed for Stepper Motor--- 
-//
+//Servo myservo; // create servo object to control servo
 
 int timesToMove = 3;	// How many times to complete rotation sequence
 
 void setup() {
 	Serial.begin(115200); // This is for ease of debugging; starts the Serial Monitor (no effect on the functionality of your code; only helps you see what it's doing)
 
+  //// --- Initialize Servo (if applicable)
+  //myservo.attach(3);// attach servo on pin 3 to servo object
+  
 	// --- Initialization of Stepper Motor ---
 	stepper1.setMaxSpeed(1000.0);
 	stepper1.setAcceleration(100.0);
@@ -32,9 +33,9 @@ void setup() {
 void loop() {
 	
 	while (timesToMove > 0){
-		_moveStepperToPositionNow(stepper1, 4096);	
+		_moveStepperToPositionNow(stepper1, 4076);	
 		delay(500);
-		_moveStepperToPositionNow(stepper1, -2048);
+		_moveStepperToPositionNow(stepper1, -2038);
 		timesToMove = timesToMove - 1;
 	}
 }

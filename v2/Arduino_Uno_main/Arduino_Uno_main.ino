@@ -43,8 +43,8 @@ unsigned int middleDistance = 0;
 // --------------------------------------------------------
 void setup() 
 { 
-	myservo.attach(3);// attach servo on pin 3 to servo object
 	Serial.begin(115200);     
+  myservo.attach(3);// attach servo on pin 3 to servo object
 
 	//
 	// "Connect the hardware to the pins"; configure the pins so the hardware they represent works properly
