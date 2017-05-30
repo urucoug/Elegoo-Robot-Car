@@ -25,8 +25,8 @@ Ultrasonic Rangefinder ("ping" sensor) References & Learning:
 
 //Macros
 #define setServoAngle(myServo, angle) myServo.write(angle)
-//the below define allows you to type either "avoidObstacles" OR "goStraightLeftOrRight" in your code to call this function 
-#define goStraightLeftOrRight avoidObstacles
+//the below define allows you to type either "avoidObstacles" OR "goStraightOrLeftOrRight" in your code to call this function 
+#define goStraightOrLeftOrRight avoidObstacles
 
 //Global Variables, constants, & objects 
 
@@ -42,7 +42,7 @@ int carSpeed = DEFAULT_SPEED;  // can be set from 0 to 255, 0 being completely o
 
 //-----------------------------------------------------------------------------------------
 //setup
-//-"setup" will run once each time the Arduino is turned on
+//-this function will run once each time the Arduino is turned on
 //-"setup" is necessary for any Arduino program
 //-----------------------------------------------------------------------------------------
 void setup()
@@ -57,7 +57,7 @@ void setup()
 
 //-----------------------------------------------------------------------------------------
 //loop
-//-"loop" will execute over and over as long as the Arduino has power
+//-this function will execute over and over as long as the Arduino has power
 //-"loop" is necessary for any Arduino program
 //-----------------------------------------------------------------------------------------
 void loop()
@@ -179,7 +179,7 @@ void doADanceMove()
 
 //-----------------------------------------------------------------------------------------
 //avoidObstacles
-//-AKA: goStraightLeftOrRight
+//-AKA: goStraightOrLeftOrRight
 //-This function checks which direction has an obstacle that is further away and turns in that direction
 //-it checks left, forward, and right, then makes a decision and drives in that direction 
 //-----------------------------------------------------------------------------------------
