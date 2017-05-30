@@ -1,7 +1,16 @@
+Project by Kevin Nufer
+and Gabriel Staples - http://www.ElectricRCAircraftGuy.com
+
+ - date format is yearMonthDay; ex: 20170529 is 29 May 2017
+ - use Semantic Versioning 2.0.0 version numbering - see here: http://semver.org/
 
 Elegoo-Robot-Car - History (Newest on BOTTOM):
 
-v1 - by Kevin Nufer
-v2 - by Kevin Nufer - major restructuring of code 
-v3 - copy by Gabriel Staples [IN WORK]
+ - v0.1.0 - May 2017 - by Kevin Nufer
+ - v0.2.0 - May 2017 - by Kevin Nufer - major restructuring of code 
+ - v0.3.0 - 20170529 - MAJOR CHANGES by Gabriel Staples, rewrite of nearly the entire "car_main" code, to put it more into conformance with standardized coding practices, and to clean it up a LOT; additionally, the "_chooseLeftOrRight()" function was renamed to "avoidObstacles()", and was completely rewritten to make it much more useful and robust (but it still needs to be tested); also note that the getUltrasonicDistance() function returns distance in units of mm now too, not cm, for added precision without having to use a float data type, which is otherwise slow and memory-intensive in calculations. In short, I rewrote or edited nearly every line of code I touched, while keeping the gist of the structure and functionality intact. TODO: pick back up with the code in the "subsystem_main" folder, which is not yet done--though it does compile too. 
+
+
+
+
 
