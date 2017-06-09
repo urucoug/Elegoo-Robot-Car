@@ -6,7 +6,7 @@ By Gabriel Staples
 http://www.ElectricRCAircraftGuy.com 
 -click "Contact me" at the top of my website to find my email address 
 Started: 8 May 2017 
-Updated: 8 May 2017 
+Updated: 9 June 2017 
 
 Helpful References:
 -https://www.arduino.cc/en/Tutorial/Smoothing
@@ -70,10 +70,12 @@ unsigned int getUltrasonicDistance()
   //Raw data sample buffer 
   const byte PING_RAW_BUF_LEN = 5; 
   static unsigned int pingRawBuffer[PING_RAW_BUF_LEN];
-  
   //Median data sample buffer 
-  const byte PING_MEDIAN_BUF_LEN = 5; //NB: *I think* that the smoothed *response freq* (not sample freq) = sampleFreq/(PING_MEDIAN_BUF_LEN), so for a sample freq of 1/39ms = 25.64 Hz, and a PING_MEDIAN_BUF_LEN of 5, we get: 25.64/5 = 25.64 samples/sec / 5 samples = 5.1Hz frequency response
+  const byte PING_MEDIAN_BUF_LEN = 5; 
   static unsigned int pingMedianBuffer[PING_MEDIAN_BUF_LEN];
+  
+  //Q: What's the median-filtered and smoothed (average-filtered) sample freq? A: For a sample freq of 1/39ms = 25.64 Hz, and a PING_RAW_BUF_LEN of 5 and a PING_MEDIAN_BUF_LEN of 5, we know it takes 9 samples to fully refresh the buffers. This is because the first 5 samples fully replace the pingRawBuffer, *and* we get a good median sample from only new data on that 5th sample, which becomes the first sample in pingMedianBuffer. That means we need 4 more in pingMedianBuffer to completely overwrite its data, so total samples to refresh all data = 5 + 4 = 9 samples. A raw sample rate of 25.64 Hz / 9 samples = 2.85 Hz *guaranteed* frequency response. However, the fact of the matter is that after only 3 good samples in a row, the median value will be one of the 3 new samples out of the 5 possible samples in the pingRawBuffer. Therefore, it is *possible* that we will have only new data comprising our new smoothed value by the time we get only 3 + 4 = 7 samples. This means our frequency response under ideal conditions is 25.64 Hz / 7 samples = 3.66 Hz at best--and as stated before: 2.85 Hz at worst. 
+  // float freqResponse = (float)1e6/(float)DESIRED_PING_PD/(PING_RAW_BUF_LEN + PING_MEDIAN_BUF_LEN - 1); //Hz 
   
   //For smoothing the median samples 
   static byte pingMedBuf_i = 0; //pingMedianBuffer index 
