@@ -34,6 +34,9 @@ const unsigned int DESIRED_PING_PD = 39000; //us; this is the desired sample per
 
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); //create NewPing object 
 
+//-----------------------------------------------------------------------------------------
+//setUpUltrasonicRangeFinder
+//-----------------------------------------------------------------------------------------
 void setUpUltrasonicRangeFinder()
 {
   pinMode(ECHO_PIN, INPUT);
@@ -42,6 +45,22 @@ void setUpUltrasonicRangeFinder()
 
 //------------------------------------------------------------------------------
 //getUltrasonicDistance()
+//-returns the distance to an object in front of the ultrasonic "ping" sensor, in mm 
+//-I recommend you use this call if your code is *blocking* (ex: you use "delay")
+//-input the number of blocking samples you'd like to take; the value returned will be 
+// the median value of this number of samples 
+//------------------------------------------------------------------------------
+unsigned int getUltrasonicDistance(byte numBlockingSamples)
+{
+  //Format: sonar.ping_median(iterations); - Do multiple pings (default=5), discard out of range pings and return median in microseconds; source: http://playground.arduino.cc/Code/NewPing
+  return (microsecondsToMm(sonar.ping_median(numBlockingSamples)));
+}
+
+//------------------------------------------------------------------------------
+//getUltrasonicDistance()
+//-returns the distance to an object in front of the ultrasonic "ping" sensor, in mm 
+//-I recommend you use this call only if your code is *non-blocking*
+//-to use this call, since the function is overloaded, simply don't include an input parameter 
 //------------------------------------------------------------------------------
 unsigned int getUltrasonicDistance()
 {
@@ -55,17 +74,6 @@ unsigned int getUltrasonicDistance()
   //Median data sample buffer 
   const byte PING_MEDIAN_BUF_LEN = 5; //NB: *I think* that the smoothed *response freq* (not sample freq) = sampleFreq/(PING_MEDIAN_BUF_LEN), so for a sample freq of 1/39ms = 25.64 Hz, and a PING_MEDIAN_BUF_LEN of 5, we get: 25.64/5 = 25.64 samples/sec / 5 samples = 5.1Hz frequency response
   static unsigned int pingMedianBuffer[PING_MEDIAN_BUF_LEN];
-  
-  //initialize the buffers
-  static bool buffersInitialized = false;
-  if (buffersInitialized==false)
-  {
-    buffersInitialized = true; //update 
-    for (byte i=0; i<PING_RAW_BUF_LEN; i++)
-      pingRawBuffer[i] = 0;
-    for (byte i=0; i<PING_MEDIAN_BUF_LEN; i++)
-      pingMedianBuffer[i] = 0;
-  }
   
   //For smoothing the median samples 
   static byte pingMedBuf_i = 0; //pingMedianBuffer index 
@@ -81,6 +89,17 @@ unsigned int getUltrasonicDistance()
   {
     tStartPing = tNow; //us; update 
     unsigned int tPing = sonar.ping(); //us; ping time; note: a 0 returned means the distance is outside of the set distance range (MAX_DISTANCE)
+    
+    //initialize the buffers
+    static bool buffersInitialized = false;
+    if (buffersInitialized==false)
+    {
+      buffersInitialized = true; //update 
+      for (byte i=0; i<PING_RAW_BUF_LEN; i++)
+        pingRawBuffer[i] = tPing;
+      for (byte i=0; i<PING_MEDIAN_BUF_LEN; i++)
+        pingMedianBuffer[i] = tPing;
+    }
     
     //load new value into moving window pingRawBuffer 
     static byte pingBuf_i = 0; //pingRawBuffer index 
@@ -99,7 +118,7 @@ unsigned int getUltrasonicDistance()
     }
     unsigned int pingMedian = Median.getMedian(pingRawBuffer_cpy, PING_RAW_BUF_LEN); //us; median ping time
 
-    //median data smoothing (see: https://www.arduino.cc/en/Tutorial/Smoothing)
+    //median data smoothing (moving average window) (see: https://www.arduino.cc/en/Tutorial/Smoothing)
     pingMedTotal -= pingMedianBuffer[pingMedBuf_i]; //subtract the last reading 
     pingMedianBuffer[pingMedBuf_i] = pingMedian; //us; load a new reading into the buffer 
     pingMedTotal += pingMedianBuffer[pingMedBuf_i]; //add the reading to the total 
@@ -112,7 +131,7 @@ unsigned int getUltrasonicDistance()
     
     //Convert the us avg to mm distance 
     //unsigned int dist_mm = microsecondsToMm(pingMedAvg);
-	dist_mm = microsecondsToMm(pingMedAvg);
+    dist_mm = microsecondsToMm(pingMedAvg);
     
     #ifdef SERIAL_PLOTTING_ON
     //For Serial Plotting 
@@ -122,7 +141,7 @@ unsigned int getUltrasonicDistance()
     #endif 
   }
   
-    Serial.print("Passing back "); Serial.println(dist_mm);
+  Serial.print("Returning "); Serial.print(dist_mm); Serial.println(" mm");
   
   return dist_mm; //mm 
 }
@@ -130,7 +149,7 @@ unsigned int getUltrasonicDistance()
 //------------------------------------------------------------------------------
 //microsecondsToMm
 //------------------------------------------------------------------------------
-unsigned int microsecondsToMm(unsigned int us)
+unsigned int microsecondsToMm(unsigned long us)
 {
   return (unsigned int)((float)us/MICROSECONDS_PER_INCH/2.0*25.4 + 0.5); //mm; distance; divide by 2 since the ultrasonic pressure wave must travel there AND back, which is 2x the distance you are measuring; do +0.5 to round to the nearest integer during truncation from float to unsigned int 
 }
