@@ -40,6 +40,9 @@ extern const byte DEFAULT_SPEED; //PWM value; can be 0-255, inclusive
 
 int carSpeed = DEFAULT_SPEED;  // can be set from 0 to 255, 0 being completely off, 255 completely on--Pulse Width Modulation (PWM); original program defaulted to 150, which is a little fast; 85 is about the minimum that will turn the wheels
 
+//for ultrasonic rangefinder
+byte numSamples = 5;
+
 //-----------------------------------------------------------------------------------------
 //setup
 //-this function will run once each time the Arduino is turned on
@@ -72,7 +75,7 @@ void loop()
   //carForward(carSpeed);
   myServo.write(90); //set servo to this angle (valid angles are 0 to 180 deg)
   newDelay(50); //ms delay 
-  unsigned int distance = getUltrasonicDistance(); //mm 
+  unsigned int distance = getUltrasonicDistance(numSamples); //mm 
   Serial.print("dist (mm) = "); Serial.println(distance);
   //if the ultrasonic rangefinder determines distance is less than __ mm, do the following
   if (distance <= 200) 
@@ -85,7 +88,9 @@ void loop()
     newDelay(1000);
     
     //carForward(carSpeed);
-  } else {
+  } 
+  else //(distance > __)
+  {
 	  Serial.println("continuing forward");  
   }
 } //end of loop 
@@ -190,17 +195,17 @@ void avoidObstacles()
   //look left and measure distance 
   myServo.write(180);
   newDelay(1500);
-  unsigned int leftDistance = getUltrasonicDistance(); //mm
+  unsigned int leftDistance = getUltrasonicDistance(numSamples); //mm
   
   //look forward and measure distance 
   myServo.write(90);
   newDelay(1500);
-  unsigned int middleDistance = getUltrasonicDistance(); //mm
+  unsigned int middleDistance = getUltrasonicDistance(numSamples); //mm
   
   //look right and measure distance 
   myServo.write(0);
   newDelay(1500);
-  unsigned int rightDistance = getUltrasonicDistance(); //mm 
+  unsigned int rightDistance = getUltrasonicDistance(numSamples); //mm 
 
   //look forward again 
   myServo.write(90);
@@ -266,17 +271,20 @@ void avoidObstacles()
   newDelay(180);
 } //end of avoidObstacles 
 
-// ----------
-// New delay
-// ----------
-void newDelay(unsigned long delay_ms) {
-	unsigned long tStart = millis(); //ms
-	unsigned long tNow = tStart; //ms
-	while (tNow-tStart < delay_ms){
-		unsigned int garbage = getUltrasonicDistance(); // keep the Ultrasonic rangefinder sampling in the background
-		tNow = millis(); //ms, update
-	}
-	
+//-----------------------------------------------------------------------------------------
+//newDelay
+//-this delay function is still blocking, but it allows background work, such as sampling 
+// from the ultrasonic range-finder, to still occur *while* delaying!
+//-----------------------------------------------------------------------------------------
+void newDelay(unsigned long delay_ms)
+{
+  unsigned long tStart = millis(); //ms
+  unsigned long tNow = tStart; //ms
+  while (tNow - tStart < delay_ms)
+  {
+    // getUltrasonicDistance(); //keep the Ultrasonic rangefinder sampling in the background
+    tNow = millis(); //ms; update
+  }
 }
 
 
