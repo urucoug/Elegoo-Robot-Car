@@ -26,29 +26,25 @@ void setup() {
 
 void loop() {
 	
-	// Move the servo
-	setServoAngle(subsysServo1,0);
-	delay(2000);
-	setServoAngle(subsysServo1,120);
-	delay(2000);
-	setServoAngle(subsysServo1,0);
-	delay(1000);
+	// Demo of the capability to control the various actuators
 	
-	// //Move the Stepper motor
-	// //_moveStepsNow(stepper1, 4076);	
-	// incrementAngleNow(getStepper1(), 90);	// Moves the stepper motor clockwise 71 degrees
-	// delay(500);
-	// incrementAngleNow(getStepper1(), -45);	// Moves the stepper motor clockwise 43 degrees
-	// delay(500);
-	// incrementAngleNow(getStepper1(), 360);	// Moves the stepper motor counterclockwise 278 degees
+	// Turn the electromagnet on
+	electromagnetOn();
 	
 	// Move the servo
 	setServoAngle(subsysServo1,0);
-	delay(2000);
+	delay(600);
 	setServoAngle(subsysServo1,120);
-	delay(2000);
-	setServoAngle(subsysServo1,0);
+	delay(600);
+
+	//Move the Stepper motor
+	incrementAngleNow(getStepper1(), 1000);	// Moves the stepper motor clockwise 71 degrees
+	delay(300);
 	
-	delay(4000);
-	//_moveStepsNow(stepper1, -2038);
+	// Turn the electromagnet off
+	electromagnetOff();
+	
+	// Turn the stepper motor in the opposite direction
+	incrementAngleNow(getStepper1(), -500);	// Moves the stepper motor clockwise 43 degrees
+	delay(2000);
 }

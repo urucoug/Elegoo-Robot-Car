@@ -5,6 +5,14 @@
 */
 
 /*	
+	Electrical setup of the 28BYJ-48 Stepper Motor and accompanying H-bridge:
+	-Plug stepper motor into the H-bridge that it comes with
+	-Connect positive terminal of the robot car battery to the (+) male pin of the H-bridge
+	-Connect negative terminal of the robot car battery to the (-) male pin of the H-bridge
+	-IN1, IN2, IN3, and IN4 on H-bridge should be connected to digital pins 3, 4, 5, and 6, respectively
+	--these pins must be used, due to the AccelStepper library used for the stepper motor
+		
+	Code setup in subsystem_main.ino:
 	If this .ino file is to be used, the following code should be placed in subsystem_main:
 	-Above "setup()":
 	#include <AccelStepper.h>

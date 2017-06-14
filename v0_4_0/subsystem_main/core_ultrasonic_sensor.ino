@@ -3,14 +3,17 @@ All code in this file is part of the "core functions," which you shouldn't have 
 */
 
 /*
+Ultrasonic rangefinder electrical setup:
+(more to come for setting up ultrasonic rangefinders on the Arduino Nano; I suggest using analog pins A1 and A2 rather than A4 and A5, since A4 and A5 are the I2C pins commonly used for communications)
+
 Ultrasonic Rangefinder ("ping" sensor) References & Learning:
  - https://www.arduino.cc/en/tutorial/ping
  - https://www.arduino.cc/en/Reference/PulseIn
 */
 
-//The ultrasonic rangefinder requires two pins: A4 and A5 (digital pins 18 and 19)
-const byte ECHO_PIN = A4;
-const byte TRIGGER_PIN = A5;
+//The ultrasonic rangefinder requires two pins
+const byte ECHO_PIN = A1;
+const byte TRIGGER_PIN = A2;
 
 const float MICROSECONDS_PER_INCH = 74.6422; //us per inch; sound travelling through air at sea level ~GS
 
