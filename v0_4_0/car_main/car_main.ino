@@ -68,7 +68,8 @@ void loop()
   //Now, either avoid obstacles and drive around, OR do something else of your choosing.
   //Just comment out unwanted lines of code as necessary 
   
-  // avoidObstacles();
+  //avoidObstacles();
+  carForward(carSpeed);
   
   //OR 
   //See if there are any obstacles ahead, and if there are (ex: if you put your hand in front of the robot), then do something 
@@ -77,17 +78,16 @@ void loop()
   newDelay(50); //ms delay 
   unsigned int distance = getUltrasonicDistance(numSamples); //mm 
   Serial.print("dist (mm) = "); Serial.println(distance);
-  //if the ultrasonic rangefinder determines distance is less than __ mm, do the following
-  if (distance <= 200) 
+  
+  //if the ultrasonic rangefinder determines distance is less than 254 mm (10 inches), do the following
+  if (distance <= 400) // distance is given in mm
   {
     carStop();
-
-    makeTheRobotShakeItsHeadNo();
-    //OR 
+    avoidObstacles();
+    // OR
+	//makeTheRobotShakeItsHeadNo();
+    // OR 
     //doADanceMove();
-    newDelay(1000);
-    
-    //carForward(carSpeed);
   } 
   else //(distance > __)
   {
@@ -191,7 +191,7 @@ void doADanceMove()
 //-it checks left, forward, and right, then makes a decision and drives in that direction 
 //-----------------------------------------------------------------------------------------
 void avoidObstacles() 
-{
+{	
   //look left and measure distance 
   myServo.write(180);
   newDelay(1500);
@@ -250,25 +250,25 @@ void avoidObstacles()
   if (maxDist<=200)
   {
     carBack(carSpeed);
-    newDelay(180);
+    newDelay(400);
   }
   //if maxDist is to the left, turn left 
   else if (maxDist_i==LEFT)
   {
-    carLeft(carSpeed);
-    newDelay(360);
+    carLeft(255);
+    newDelay(200);
   }
   //if maxDist is to the right, turn right 
   else if (maxDist_i==RIGHT)
   {
-    carRight(carSpeed);
-    newDelay(360);
+    carRight(255);
+    newDelay(200);
   }
   //else maxDist is straight ahead, so don't do anything 
   
   //now continue forward 
   carForward(carSpeed);
-  newDelay(180);
+  // newDelay(50);
 } //end of avoidObstacles 
 
 //-----------------------------------------------------------------------------------------

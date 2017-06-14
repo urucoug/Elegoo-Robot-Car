@@ -25,7 +25,7 @@ const byte IN4_PIN = 9;
 const byte ENA_PIN = 5; //enable pin for H-bridge connected to motor A
 const byte ENB_PIN = 11; //enable pin for H-bridge connected to motor B
 
-const byte DEFAULT_SPEED = 150; //PWM value; can be 0-255, inclusive 
+const byte DEFAULT_SPEED = 110; //PWM value; can be 0-255, inclusive 
 
 //-----------------------------------------------------------------------------------------
 //setUpCarMotors

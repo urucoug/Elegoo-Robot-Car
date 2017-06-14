@@ -53,7 +53,10 @@ void setUpUltrasonicRangeFinder()
 unsigned int getUltrasonicDistance(byte numBlockingSamples)
 {
   //Format: sonar.ping_median(iterations); - Do multiple pings (default=5), discard out of range pings and return median in microseconds; source: http://playground.arduino.cc/Code/NewPing
-  return (microsecondsToMm(sonar.ping_median(numBlockingSamples)));
+  unsigned int dist_mm = microsecondsToMm(sonar.ping_median(numBlockingSamples)); //mm 
+  if (dist_mm==0) //dist is so far away it can't be read, so the newPing lib returns 0, so make it large instead 
+    dist_mm = MAX_DISTANCE*10; //mm
+  return dist_mm;
 }
 
 //------------------------------------------------------------------------------
@@ -134,6 +137,8 @@ unsigned int getUltrasonicDistance()
     //Convert the us avg to mm distance 
     //unsigned int dist_mm = microsecondsToMm(pingMedAvg);
     dist_mm = microsecondsToMm(pingMedAvg);
+    if (dist_mm==0) //dist is so far away it can't be read, so the newPing lib returns 0, so make it large instead 
+      dist_mm = MAX_DISTANCE*10; //mm
     
     #ifdef SERIAL_PLOTTING_ON
     //For Serial Plotting 
