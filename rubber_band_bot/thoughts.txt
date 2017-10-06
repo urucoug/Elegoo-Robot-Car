@@ -1,0 +1,2 @@
+Need to increase voltage to 7 V and reduce friction
+Other thing to consider--longer stroke
