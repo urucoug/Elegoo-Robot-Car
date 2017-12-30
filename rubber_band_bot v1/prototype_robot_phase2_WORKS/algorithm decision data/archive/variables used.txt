@@ -1,0 +1,23 @@
+HUNTING_RANGE_MM = 600;                			// Threshold distance (mm) used to detect targets (1219 mm ~= 4 ft)
+
+const unsigned int HUNTING_NOISE_MM = 76;                 // Distance (mm) used in hunting routine to verify measurement (about 3 inches)
+const unsigned int THRESHOLD_DETECTABLE_MOVE_MM = 203;    // Threshold distance (mm) target has to move to trigger shot fired (203 mm ~= 8 inches)
+
+
+// Variables to make the hunting routine non-blocking
+
+const unsigned long DELAY_HUNTING_MS = 1500;    // # ms that hunting code will use to determine if ultrasonic rangefinder signature is target or not
+
+unsigned long tStartHunting = 0;  // time (ms)
+
+unsigned long tNowHunting = 0;    // time (ms)
+
+
+unsigned int sampleCount = 0;     // sample counting function used only for troubleshooting (for now)
+// For evaluation of targets by the ultrasonic rangefinder; used in huntTargets function
+
+unsigned int targetState = 0;     // used in huntTargets(); sets robot's mode of operation
+
+unsigned int targetPings[12];     // ultrasonic rangefinder samples used by robot in huntTargets() to determine if object detected is an obstacle, target, or false alarm
+
+unsigned int originalTargetPing;  // distance (mm) from rangefinder to obstacle/target to be evaluated in huntTargets()
